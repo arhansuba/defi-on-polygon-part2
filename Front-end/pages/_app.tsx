@@ -9,12 +9,15 @@ import { QueryClient, QueryClientProvider, QueryCache } from 'react-query';
 import { WagmiConfig, createClient } from 'wagmi';
 import { providers } from 'ethers';
 
-// Use wagmi to configure the provider.
-const quicknodeProvider = new providers.JsonRpcProvider('<YOUR-QUICKNODE-POLYGON-URL>');
+const localhostProvider = new providers.JsonRpcProvider('http://localhost:8545', {
+  name: 'dev',
+  chainId: 1337,
+  ensAddress: undefined,
+});
 // Give wagmi our provider config and allow it to autoconnect wallet
 const client = createClient({
   autoConnect: true,
-  provider: quicknodeProvider,
+  provider: localhostProvider,
 });
 
 const queryClient = new QueryClient({
