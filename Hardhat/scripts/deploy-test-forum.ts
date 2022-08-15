@@ -1,6 +1,7 @@
 import { Contract, ContractFactory } from 'ethers';
 import { ethers } from 'hardhat';
 import { makeBig } from '../../Front-end/lib/number-utils';
+import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
 
 async function main() {
   // let's get a another SignerWithAddress to upvote a question
@@ -51,6 +52,41 @@ async function main() {
   // upvote answer with id 2, 'Yes, I am ur fren! 👊'
   const upvote1 = await forum.connect(user1).upvoteAnswer(2);
   await upvote1.wait();
+
+  /**
+   * PART 2: Add AMM contracts and liquidity
+   */
+  const Matic = await ethers.getContractFactory('Matic');
+  const matic = await Matic.deploy();
+  await matic.deployed();
+
+  console.log('matic deployed to: ', matic.address);
+  const AMM = await ethers.getContractFactory('AMM');
+  const amm = await AMM.deploy(matic.address, goflow.address);
+  await amm.deployed();
+  console.log('AMM deployed to: ', amm.address);
+
+  // mint more for AMM liquidity
+  await goflow.mint(makeBig(1000));
+  await goflow.connect(user1).mint(makeBig(1000));
+  // Owner mints 2000 matic ond deploy, transfers 1000 from owner to user1
+  await matic.transfer(user1.address, makeBig(1000));
+
+  const provideLiquidity = async (user: SignerWithAddress, allowAmount = 1_000, provideAmount = 100) => {
+    const allow = makeBig(allowAmount); //1000
+    const provide = makeBig(provideAmount); //100
+
+    const approve = await goflow.connect(user).approve(amm.address, allow);
+    await approve.wait();
+    const approve2 = await matic.connect(user).approve(amm.address, allow);
+    await approve2.wait();
+
+    const liquidity = await amm.connect(user).provide(provide, provide);
+    await liquidity.wait();
+  };
+
+  await provideLiquidity(owner); // owner approves AMM to transfer 1000 of each token & provides 100 of each token to the AMM contract
+  await provideLiquidity(user1); // user1
 }
 
 // We recommend this pattern to be able to use async/await everywhere

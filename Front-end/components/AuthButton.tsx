@@ -20,8 +20,8 @@ const AuthButton: React.FunctionComponent<AuthButtonProps> = ({ text, ...props }
     if (error?.name === 'ConnectorNotFoundError') {
       toast.error('MetaMask extension required to sign in');
     }
-    if (isConnected && chain?.id !== chains.polygonMumbai.id) {
-      toast.error('please connect to the Polygon Mumbai test network', {id: 'network-error'});
+    if (isConnected && chain?.id !== chains.localhost.id) {
+      toast.error('please connect to your local network', {id: 'network-error'});
     }
   }, [error, chain, isConnected]);
 
