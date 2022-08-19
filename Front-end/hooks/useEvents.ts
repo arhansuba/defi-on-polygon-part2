@@ -7,6 +7,7 @@ import useGoflowContract, { TokenEvent } from './contracts/useGoflowContract';
 import useForumContract, { Answer, ForumEvent } from './contracts/useForumContract';
 import { makeNum } from '../lib/number-utils';
 import truncateMiddle from 'truncate-middle';
+import useAmmContract from './contracts/useAmmContract';
 
 interface UseEventsQuery {
   questionId?: BigNumber;
@@ -18,6 +19,7 @@ const useEvents = ({ questionId }: UseEventsQuery) => {
   const queryClient = useQueryClient();
   const forumContract = useForumContract();
   const tokenContract = useGoflowContract();
+  const ammContract = useAmmContract();
 
   useEffect(() => {
     const questionHandler = () => {
@@ -49,6 +51,9 @@ const useEvents = ({ questionId }: UseEventsQuery) => {
       if (to === forumContract.contract.address) {
         console.log(`Transferred ${makeNum(amount)} GOFLOW to Forum contract`);
         queryClient.invalidateQueries(['contractBalance']);
+      } else if (to === ammContract.contract.address) {
+        queryClient.invalidateQueries(['poolDetails']);
+        queryClient.invalidateQueries(['userHoldings', from]);
       } else if (from === constants.AddressZero) {
         // e.g. '0x0000000000000000000000000000000000000000'
         console.log(`Minted ${makeNum(amount)} GOFLOW to: ${truncateMiddle(to, 6, 5, '...')}`);
@@ -56,6 +61,8 @@ const useEvents = ({ questionId }: UseEventsQuery) => {
       } else {
         console.log(`Transferred ${makeNum(amount)} GOFLOW to: ${truncateMiddle(to, 6, 5, '...')}`);
         queryClient.invalidateQueries(['userBalance', to]);
+        queryClient.invalidateQueries(['userHoldings', to]);
+        queryClient.invalidateQueries(['poolDetails']);
       }
     };
 
