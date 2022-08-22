@@ -2,7 +2,7 @@ import * as wagmi from 'wagmi';
 import { useProvider, useSigner } from 'wagmi';
 import { makeNum } from '../../lib/number-utils';
 import type { BigNumber } from 'ethers';
-import MaticContract from '../../../Hardhat/artifacts/contracts/Matic.sol/Matic.json';
+import MaticContract from '../../lib/contracts/Matic.json';
 
 export type Amount = BigNumber;
 

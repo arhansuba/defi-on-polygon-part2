@@ -2,7 +2,7 @@ import * as wagmi from 'wagmi';
 import { useProvider, useSigner } from 'wagmi';
 import { makeNum } from '../../lib/number-utils';
 import type { BigNumber } from 'ethers';
-import GoflowContract from '../../../Hardhat/artifacts/contracts/OurToken.sol/Goflow.json';
+import GoflowContract from '../../lib/contracts/Goflow.json';
 
 export enum TokenEvent {
   Transfer = 'Transfer',
