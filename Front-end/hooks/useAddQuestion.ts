@@ -8,7 +8,6 @@ interface UseAddQuestionPayload {
 const useAddQuestion = () => {
   const contract = useForumContract();
   return useMutation(async ({ message }: UseAddQuestionPayload) => {
-    console.log('here')
     await contract.postQuestion(message);
   });
 };

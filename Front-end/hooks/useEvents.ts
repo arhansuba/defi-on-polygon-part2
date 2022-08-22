@@ -52,6 +52,7 @@ const useEvents = ({ questionId }: UseEventsQuery) => {
         console.log(`Transferred ${makeNum(amount)} GOFLOW to Forum contract`);
         queryClient.invalidateQueries(['contractBalance']);
       } else if (to === ammContract.contract.address) {
+        console.log(`Transferred ${makeNum(amount)} GOFLOW to AMM contract`);
         queryClient.invalidateQueries(['poolDetails']);
         queryClient.invalidateQueries(['userHoldings', from]);
       } else if (from === constants.AddressZero) {

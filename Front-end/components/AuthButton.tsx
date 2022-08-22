@@ -15,13 +15,14 @@ const AuthButton: React.FunctionComponent<AuthButtonProps> = ({ text, ...props }
   const { connect, error } = useConnect({ connector: new InjectedConnector() });
   const { isConnected } = useAccount();
   const { chain } = useNetwork();
+  const { localhost, polygonMumbai } = chains;
 
   React.useEffect(() => {
     if (error?.name === 'ConnectorNotFoundError') {
       toast.error('MetaMask extension required to sign in');
     }
-    if (isConnected && chain?.id !== chains.localhost.id) {
-      toast.error('please connect to your local network', {id: 'network-error'});
+    if (isConnected && chain?.id !== polygonMumbai.id) {
+      toast.error('please connect to: ' + polygonMumbai.name, { id: 'network-error' });
     }
   }, [error, chain, isConnected]);
 

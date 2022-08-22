@@ -8,8 +8,8 @@ const config: HardhatUserConfig = {
     hardhat: {
       chainId: 1337,
     },
-    matic: {
-      url: '<YOUR-QUICKNODE-POLYGON-URL>',
+    polygon: {
+      url: 'https://white-snowy-breeze.matic-testnet.discover.quiknode.pro/7677ba3e0b8940a9866fbecc159fb7efe2445d3e/',
       accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
     },
   },

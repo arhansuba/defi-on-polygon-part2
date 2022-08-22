@@ -6,19 +6,30 @@ import { ChakraProvider } from '@chakra-ui/react';
 import { Toaster, toast } from 'react-hot-toast';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import { QueryClient, QueryClientProvider, QueryCache } from 'react-query';
-import { WagmiConfig, createClient } from 'wagmi';
-import { providers } from 'ethers';
 import NextNProgress from 'nextjs-progressbar';
+import { WagmiConfig, createClient, configureChains, chain } from 'wagmi';
+import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
+import { alchemyProvider } from 'wagmi/providers/alchemy';
+import { InjectedConnector } from 'wagmi/connectors/injected';
 
-const localhostProvider = new providers.JsonRpcProvider('http://localhost:8545', {
-  name: 'dev',
-  chainId: 1337,
-  ensAddress: undefined,
-});
+const { chains, provider } = configureChains(
+  [chain.polygonMumbai],
+  [
+    jsonRpcProvider({
+      priority: 0,
+      rpc: (chain) => ({
+        http: 'https://white-snowy-breeze.matic-testnet.discover.quiknode.pro/7677ba3e0b8940a9866fbecc159fb7efe2445d3e/',
+      }),
+    }),
+    alchemyProvider({ alchemyId: '5i38PznIJoCxXZLaD0d2wU28aXQrwpP-', priority: 1 }),
+  ]
+);
+
 // Give wagmi our provider config and allow it to autoconnect wallet
 const client = createClient({
   autoConnect: true,
-  provider: localhostProvider,
+  connectors: [new InjectedConnector({ chains })],
+  provider: provider,
 });
 
 const queryClient = new QueryClient({

@@ -26,7 +26,7 @@ const useAmmContract = () => {
 
   const contract = wagmi.useContract({
     // Change this adress after every deploy!
-    addressOrName: '0xa513E6E4b8f2a923D98304ec87F64353C4D5C853',
+    addressOrName: '0xC0011Aaa2d7b0C4AD65C83518bc0aA16Ac49E9a2',
     contractInterface: AmmContract.abi,
     signerOrProvider: signer || provider,
   });

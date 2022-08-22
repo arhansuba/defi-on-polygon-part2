@@ -12,7 +12,7 @@ const useMaticContract = () => {
 
   const contract = wagmi.useContract({
     // Change this adress after every deploy!
-    addressOrName: '0x0165878A594ca255338adfa4d48449f69242Eb8F',
+    addressOrName: '0x7d26cE5f690BB2294983fe4D5939d6568393d321',
     contractInterface: MaticContract.abi,
     signerOrProvider: signer || provider,
   });
