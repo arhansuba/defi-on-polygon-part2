@@ -1,5 +1,6 @@
 import { Contract, ContractFactory } from 'ethers';
 import { ethers } from 'hardhat';
+import { makeBig } from '../../Front-end/lib/number-utils';
 
 async function main() {
   // deploy the contracts
@@ -20,6 +21,31 @@ async function main() {
   // What a nice answer 🤝 🤗
   const answerTx3 = await forum.postAnswer(0, 'Yes, I am ur fren! 👊');
   await answerTx3.wait();
+
+  /**
+   * PART 2: Add AMM contracts and liquidity
+   */
+  const Matic = await ethers.getContractFactory('Matic');
+  const matic = await Matic.deploy();
+  await matic.deployed();
+
+  console.log('matic deployed to: ', matic.address);
+  const AMM = await ethers.getContractFactory('AMM');
+  const amm = await AMM.deploy(matic.address, goflow.address);
+  await amm.deployed();
+  console.log('AMM deployed to: ', amm.address);
+
+  // mint more for AMM liquidity
+  const mint = await goflow.mint(makeBig(1000));
+  await mint.wait();
+
+  const approve = await goflow.approve(amm.address, makeBig(1_000));
+  await approve.wait();
+  const approve2 = await matic.approve(amm.address, makeBig(1_000));
+  await approve2.wait();
+
+  const liquidity = await amm.provide(makeBig(100), makeBig(100));
+  await liquidity.wait();
 }
 
 // We recommend this pattern to be able to use async/await everywhere
